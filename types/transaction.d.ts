@@ -1,6 +1,6 @@
 export interface Output {
     script: Buffer;
-    value: number;
+    value: bigint;
 }
 export interface Input {
     hash: Buffer;
@@ -26,7 +26,7 @@ export declare class Transaction {
     outs: Output[];
     isCoinbase(): boolean;
     addInput(hash: Buffer, index: number, sequence?: number, scriptSig?: Buffer): number;
-    addOutput(scriptPubKey: Buffer, value: number): number;
+    addOutput(scriptPubKey: Buffer, value: bigint): number;
     hasWitnesses(): boolean;
     weight(): number;
     virtualSize(): number;
@@ -41,7 +41,7 @@ export declare class Transaction {
      * This hash can then be used to sign the provided transaction input.
      */
     hashForSignature(inIndex: number, prevOutScript: Buffer, hashType: number): Buffer;
-    hashForWitnessV0(inIndex: number, prevOutScript: Buffer, value: number, hashType: number): Buffer;
+    hashForWitnessV0(inIndex: number, prevOutScript: Buffer, value: bigint, hashType: number): Buffer;
     getHash(forWitness?: boolean): Buffer;
     getId(): string;
     toBuffer(buffer?: Buffer, initialOffset?: number): Buffer;

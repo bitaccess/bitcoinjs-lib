@@ -1112,7 +1112,7 @@ function scriptWitnessToWitnessStack(buffer) {
     return vi;
   }
   function readVarSlice() {
-    return readSlice(readVarInt());
+    return readSlice(Number(readVarInt()));
   }
   function readVector() {
     const count = readVarInt();
@@ -1189,7 +1189,7 @@ function addNonWitnessTxCache(cache, input, inputIndex) {
   });
 }
 function inputFinalizeGetAmts(inputs, tx, cache, mustFinalize) {
-  let inputAmount = 0;
+  let inputAmount = BigInt(0);
   inputs.forEach((input, idx) => {
     if (mustFinalize && input.finalScriptSig)
       tx.ins[idx].script = input.finalScriptSig;
@@ -1207,15 +1207,18 @@ function inputFinalizeGetAmts(inputs, tx, cache, mustFinalize) {
       inputAmount += out.value;
     }
   });
-  const outputAmount = tx.outs.reduce((total, o) => total + o.value, 0);
+  const outputAmount = tx.outs.reduce((total, o) => total + o.value, BigInt(0));
   const fee = inputAmount - outputAmount;
   if (fee < 0) {
     throw new Error('Outputs are spending more than Inputs');
   }
+  if (fee > Number.MAX_SAFE_INTEGER) {
+    throw new Error('Fee exceeds MAX_SAFE_INTEGER');
+  }
   const bytes = tx.virtualSize();
-  cache.__FEE = fee;
+  cache.__FEE = Number(fee);
   cache.__EXTRACTED_TX = tx;
-  cache.__FEE_RATE = Math.floor(fee / bytes);
+  cache.__FEE_RATE = Math.floor(Number(fee) / bytes);
 }
 function nonWitnessUtxoTxFromCache(cache, input, inputIndex) {
   const c = cache.__NON_WITNESS_UTXO_TX_CACHE;

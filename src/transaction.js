@@ -136,7 +136,7 @@ class Transaction {
     return (
       this.outs.push({
         script: scriptPubKey,
-        value,
+        value: BigInt(value),
       }) - 1
     );
   }
@@ -332,7 +332,8 @@ class Transaction {
   getHash(forWitness) {
     // wtxid for coinbase is always 32 bytes of 0x00
     if (forWitness && this.isCoinbase()) return Buffer.alloc(32, 0);
-    return bcrypto.hash256(this.__toBuffer(undefined, undefined, forWitness));
+    const buf = this.__toBuffer(undefined, undefined, forWitness);
+    return bcrypto.hash256(buf);
   }
   getId() {
     // transaction hash's are displayed in reverse order

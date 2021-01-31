@@ -1,9 +1,9 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
 const typeforce = require('typeforce');
-const UINT31_MAX = Math.pow(2, 31) - 1;
+const constants_1 = require('./constants');
 function UInt31(value) {
-  return typeforce.UInt32(value) && value <= UINT31_MAX;
+  return typeforce.UInt32(value) && value <= constants_1.UINT31_MAX;
 }
 exports.UInt31 = UInt31;
 function BIP32Path(value) {
@@ -21,9 +21,13 @@ function Signer(obj) {
   );
 }
 exports.Signer = Signer;
-const SATOSHI_MAX = 21 * 1e14;
 function Satoshi(value) {
-  return typeforce.UInt53(value) && value <= SATOSHI_MAX;
+  if (typeof value === 'number') {
+    return typeforce.UInt53(value);
+  } else if (typeof value === 'bigint') {
+    return value >= BigInt(0) && value <= constants_1.UINT64_MAX;
+  }
+  return false;
 }
 exports.Satoshi = Satoshi;
 // external dependent types

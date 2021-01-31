@@ -190,7 +190,7 @@ describe('bitcoinjs-lib (transactions w/ CSV)', () => {
       const tx = new bitcoin.Transaction();
       tx.version = 2;
       tx.addInput(idToHash(unspent.txId), unspent.vout, sequence);
-      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), 1e4);
+      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), BigInt(1e4));
 
       // {Alice's signature} OP_TRUE
       const signatureHash = tx.hashForSignature(
@@ -252,7 +252,7 @@ describe('bitcoinjs-lib (transactions w/ CSV)', () => {
       const tx = new bitcoin.Transaction();
       tx.version = 2;
       tx.addInput(idToHash(unspent.txId), unspent.vout);
-      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), 7e4);
+      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), BigInt(7e4));
 
       // OP_0 {Bob sig} {Charles sig} OP_TRUE OP_TRUE
       const signatureHash = tx.hashForSignature(
@@ -319,7 +319,7 @@ describe('bitcoinjs-lib (transactions w/ CSV)', () => {
       const tx = new bitcoin.Transaction();
       tx.version = 2;
       tx.addInput(idToHash(unspent.txId), unspent.vout, sequence1); // Set sequence1 for input
-      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), 7e4);
+      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), BigInt(7e4));
 
       // OP_0 {Bob sig} {Alice mediator sig} OP_FALSE OP_TRUE
       const signatureHash = tx.hashForSignature(
@@ -389,7 +389,7 @@ describe('bitcoinjs-lib (transactions w/ CSV)', () => {
       const tx = new bitcoin.Transaction();
       tx.version = 2;
       tx.addInput(idToHash(unspent.txId), unspent.vout, sequence2); // Set sequence2 for input
-      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), 7e4);
+      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), BigInt(7e4));
 
       // {Alice mediator sig} OP_FALSE
       const signatureHash = tx.hashForSignature(

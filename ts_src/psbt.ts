@@ -1469,14 +1469,14 @@ function scriptWitnessToWitnessStack(buffer: Buffer): Buffer[] {
     return buffer.slice(offset - n, offset);
   }
 
-  function readVarInt(): number {
+  function readVarInt(): number | bigint {
     const vi = varuint.decode(buffer, offset);
     offset += (varuint.decode as any).bytes;
     return vi;
   }
 
   function readVarSlice(): Buffer {
-    return readSlice(readVarInt());
+    return readSlice(Number(readVarInt()));
   }
 
   function readVector(): Buffer[] {
@@ -1577,7 +1577,7 @@ function inputFinalizeGetAmts(
   cache: PsbtCache,
   mustFinalize: boolean,
 ): void {
-  let inputAmount = 0;
+  let inputAmount = BigInt(0);
   inputs.forEach((input, idx) => {
     if (mustFinalize && input.finalScriptSig)
       tx.ins[idx].script = input.finalScriptSig;
@@ -1597,16 +1597,19 @@ function inputFinalizeGetAmts(
   });
   const outputAmount = (tx.outs as Output[]).reduce(
     (total, o) => total + o.value,
-    0,
+    BigInt(0),
   );
   const fee = inputAmount - outputAmount;
   if (fee < 0) {
     throw new Error('Outputs are spending more than Inputs');
   }
+  if (fee > Number.MAX_SAFE_INTEGER) {
+    throw new Error('Fee exceeds MAX_SAFE_INTEGER');
+  }
   const bytes = tx.virtualSize();
-  cache.__FEE = fee;
+  cache.__FEE = Number(fee);
   cache.__EXTRACTED_TX = tx;
-  cache.__FEE_RATE = Math.floor(fee / bytes);
+  cache.__FEE_RATE = Math.floor(Number(fee) / bytes);
 }
 
 function nonWitnessUtxoTxFromCache(

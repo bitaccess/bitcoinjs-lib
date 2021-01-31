@@ -1,5 +1,5 @@
-import { Psbt as PsbtBase } from 'bip174';
-import * as varuint from 'bip174/src/lib/converter/varint';
+import { Psbt as PsbtBase } from 'bip174-bigint';
+import * as varuint from 'bip174-bigint/src/lib/converter/varint';
 import {
   KeyValue,
   PartialSig,
@@ -12,8 +12,8 @@ import {
   TransactionFromBuffer,
   TransactionInput,
   TransactionOutput,
-} from 'bip174/src/lib/interfaces';
-import { checkForInput } from 'bip174/src/lib/utils';
+} from 'bip174-bigint/src/lib/interfaces';
+import { checkForInput } from 'bip174-bigint/src/lib/utils';
 import { fromOutputScript, toOutputScript } from './address';
 import { cloneBuffer, reverseBuffer } from './bufferutils';
 import { hash160 } from './crypto';

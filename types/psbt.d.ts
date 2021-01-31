@@ -1,5 +1,5 @@
-import { Psbt as PsbtBase } from 'bip174';
-import { KeyValue, PsbtGlobalUpdate, PsbtInput, PsbtInputUpdate, PsbtOutput, PsbtOutputUpdate, TransactionInput, TransactionOutput } from 'bip174/src/lib/interfaces';
+import { Psbt as PsbtBase } from 'bip174-bigint';
+import { KeyValue, PsbtGlobalUpdate, PsbtInput, PsbtInputUpdate, PsbtOutput, PsbtOutputUpdate, TransactionInput, TransactionOutput } from 'bip174-bigint/src/lib/interfaces';
 import { Signer, SignerAsync } from './ecpair';
 import { Network } from './networks';
 import { Transaction } from './transaction';

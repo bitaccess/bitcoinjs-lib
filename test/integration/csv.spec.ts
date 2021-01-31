@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { PsbtInput } from 'bip174/src/lib/interfaces';
+import { PsbtInput } from 'bip174-bigint/src/lib/interfaces';
 import { before, describe, it } from 'mocha';
 import * as bitcoin from '../..';
 import { regtestUtils } from './_regtest';

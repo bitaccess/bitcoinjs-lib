@@ -47,7 +47,11 @@ describe('types', () => {
       { value: 1, result: true },
       { value: 20999999 * 1e8, result: true },
       { value: 21000000 * 1e8, result: true },
-      { value: 21000001 * 1e8, result: false },
+      { value: 21000001 * 1e8, result: true },
+      { value: Number.MAX_SAFE_INTEGER, result: true },
+      { value: BigInt(Number.MAX_SAFE_INTEGER) + BigInt(1), result: true },
+      { value: BigInt('0xffffffffffffffff'), result: true }, // Max uint64
+      { value: BigInt('0xffffffffffffffff') + BigInt(1), result: false }, // Max uint64 + 1
     ].forEach(f => {
       it('returns ' + f.result + ' for valid for ' + f.value, () => {
         assert.strictEqual(types.Satoshi(f.value), f.result);

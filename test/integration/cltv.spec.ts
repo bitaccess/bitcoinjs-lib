@@ -79,7 +79,7 @@ describe('bitcoinjs-lib (transactions w/ CLTV)', () => {
       tx.locktime = lockTime;
       // Note: nSequence MUST be <= 0xfffffffe otherwise LockTime is ignored, and is immediately spendable.
       tx.addInput(idToHash(unspent.txId), unspent.vout, 0xfffffffe);
-      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), 7e4);
+      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), BigInt(7e4));
 
       // {Alice's signature} OP_TRUE
       const signatureHash = tx.hashForSignature(0, redeemScript, hashType);
@@ -128,7 +128,7 @@ describe('bitcoinjs-lib (transactions w/ CLTV)', () => {
       tx.locktime = lockTime;
       // Note: nSequence MUST be <= 0xfffffffe otherwise LockTime is ignored, and is immediately spendable.
       tx.addInput(idToHash(unspent.txId), unspent.vout, 0xfffffffe);
-      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), 7e4);
+      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), BigInt(7e4));
 
       // {Alice's signature} OP_TRUE
       const signatureHash = tx.hashForSignature(0, redeemScript, hashType);
@@ -179,7 +179,7 @@ describe('bitcoinjs-lib (transactions w/ CLTV)', () => {
       tx.locktime = lockTime;
       // Note: nSequence MUST be <= 0xfffffffe otherwise LockTime is ignored, and is immediately spendable.
       tx.addInput(idToHash(unspent.txId), unspent.vout, 0xfffffffe);
-      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), 8e4);
+      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), BigInt(8e4));
 
       // {Alice's signature} {Bob's signature} OP_FALSE
       const signatureHash = tx.hashForSignature(0, redeemScript, hashType);
@@ -227,7 +227,7 @@ describe('bitcoinjs-lib (transactions w/ CLTV)', () => {
       tx.locktime = lockTime;
       // Note: nSequence MUST be <= 0xfffffffe otherwise LockTime is ignored, and is immediately spendable.
       tx.addInput(idToHash(unspent.txId), unspent.vout, 0xfffffffe);
-      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), 1e4);
+      tx.addOutput(toOutputScript(regtestUtils.RANDOM_ADDRESS), BigInt(1e4));
 
       // {Alice's signature} OP_TRUE
       const signatureHash = tx.hashForSignature(0, redeemScript, hashType);

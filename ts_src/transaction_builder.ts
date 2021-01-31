@@ -45,7 +45,7 @@ type TxbScriptType = string;
 type TxbScript = Buffer;
 
 interface TxbInput {
-  value?: number;
+  value?: bigint;
   hasWitness?: boolean;
   signScript?: TxbScript;
   signType?: TxbScriptType;
@@ -77,7 +77,7 @@ interface TxbSignArg {
   keyPair: Signer;
   redeemScript?: Buffer;
   hashType?: number;
-  witnessValue?: number;
+  witnessValue?: bigint;
   witnessScript?: Buffer;
 }
 
@@ -198,7 +198,7 @@ export class TransactionBuilder {
       throw new Error('No, this would invalidate signatures');
     }
 
-    let value: number | undefined;
+    let value: bigint | undefined;
 
     // is it a hex string?
     if (txIsString(txHash)) {
@@ -221,7 +221,7 @@ export class TransactionBuilder {
     });
   }
 
-  addOutput(scriptPubKey: string | Buffer, value: number): number {
+  addOutput(scriptPubKey: string | Buffer, value: bigint): number {
     if (!this.__canModifyOutputs()) {
       throw new Error('No, this would invalidate signatures');
     }
@@ -247,7 +247,7 @@ export class TransactionBuilder {
     keyPair?: Signer,
     redeemScript?: Buffer,
     hashType?: number,
-    witnessValue?: number,
+    witnessValue?: bigint,
     witnessScript?: Buffer,
   ): void {
     trySign(
@@ -419,16 +419,22 @@ export class TransactionBuilder {
 
   private __overMaximumFees(bytes: number): boolean {
     // not all inputs will have .value defined
-    const incoming = this.__INPUTS.reduce((a, x) => a + (x.value! >>> 0), 0);
+    const incoming = this.__INPUTS.reduce(
+      (a, x) => a + BigInt(x.value || 0),
+      BigInt(0),
+    );
 
     // but all outputs do, and if we have any input value
     // we can immediately determine if the outputs are too small
     const outgoing = this.__TX.outs.reduce(
-      (a, x) => a + (x as Output).value,
-      0,
+      (a, x) => a + BigInt(x.value || 0),
+      BigInt(0),
     );
     const fee = incoming - outgoing;
-    const feeRate = fee / bytes;
+    if (fee > BigInt(Number.MAX_SAFE_INTEGER)) {
+      return true;
+    }
+    const feeRate = Number(fee) / bytes;
 
     return feeRate > this.maximumFeeRate;
   }
@@ -1217,7 +1223,7 @@ function getSigningData(
   keyPair?: Signer,
   redeemScript?: Buffer,
   hashType?: number,
-  witnessValue?: number,
+  witnessValue?: bigint,
   witnessScript?: Buffer,
   useLowR?: boolean,
 ): SigningData {
@@ -1272,7 +1278,7 @@ function getSigningData(
       if (input.value !== undefined && input.value !== witnessValue)
         throw new Error('Input did not match witnessValue');
       typeforce(types.Satoshi, witnessValue);
-      input.value = witnessValue;
+      input.value = BigInt(witnessValue);
     }
 
     if (!canSign(input)) {
@@ -1296,7 +1302,7 @@ function getSigningData(
     signatureHash = tx.hashForWitnessV0(
       vin,
       input.signScript as Buffer,
-      input.value as number,
+      input.value!,
       hashType,
     );
   } else {

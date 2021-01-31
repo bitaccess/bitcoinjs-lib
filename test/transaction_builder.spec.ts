@@ -181,7 +181,7 @@ for (const useOldSignArgs of [false, true]) {
           });
 
           f.outputs.forEach(output => {
-            tx.addOutput(bscript.fromASM(output.script), output.value);
+            tx.addOutput(bscript.fromASM(output.script), BigInt(output.value));
           });
 
           const txb = TransactionBuilder.fromTransaction(tx);
@@ -281,8 +281,8 @@ for (const useOldSignArgs of [false, true]) {
 
       it('accepts a prevTx, index [and sequence number]', () => {
         const prevTx = new Transaction();
-        prevTx.addOutput(scripts[0], 0);
-        prevTx.addOutput(scripts[1], 1);
+        prevTx.addOutput(scripts[0], BigInt(0));
+        prevTx.addOutput(scripts[1], BigInt(1));
 
         const vin = txb.addInput(prevTx, 1, 54);
         assert.strictEqual(vin, 0);
@@ -301,7 +301,7 @@ for (const useOldSignArgs of [false, true]) {
 
       it('throws if SIGHASH_ALL has been used to sign any existing scriptSigs', () => {
         txb.addInput(txHash, 0);
-        txb.addOutput(scripts[0], 1000);
+        txb.addOutput(scripts[0], BigInt(1000));
         txb.sign({
           prevOutScriptType: 'p2pkh',
           vin: 0,
@@ -322,39 +322,39 @@ for (const useOldSignArgs of [false, true]) {
 
       it('accepts an address string and value', () => {
         const { address } = payments.p2pkh({ pubkey: keyPair.publicKey });
-        const vout = txb.addOutput(address!, 1000);
+        const vout = txb.addOutput(address!, BigInt(1000));
         assert.strictEqual(vout, 0);
 
         const txout = (txb as any).__TX.outs[0];
         assert.deepStrictEqual(txout.script, scripts[0]);
-        assert.strictEqual(txout.value, 1000);
+        assert.strictEqual(txout.value, BigInt(1000));
       });
 
       it('accepts a ScriptPubKey and value', () => {
-        const vout = txb.addOutput(scripts[0], 1000);
+        const vout = txb.addOutput(scripts[0], BigInt(1000));
         assert.strictEqual(vout, 0);
 
         const txout = (txb as any).__TX.outs[0];
         assert.deepStrictEqual(txout.script, scripts[0]);
-        assert.strictEqual(txout.value, 1000);
+        assert.strictEqual(txout.value, BigInt(1000));
       });
 
       it('throws if address is of the wrong network', () => {
         assert.throws(() => {
-          txb.addOutput('2NGHjvjw83pcVFgMcA7QvSMh2c246rxLVz9', 1000);
+          txb.addOutput('2NGHjvjw83pcVFgMcA7QvSMh2c246rxLVz9', BigInt(1000));
         }, /2NGHjvjw83pcVFgMcA7QvSMh2c246rxLVz9 has no matching Script/);
       });
 
       it('add second output after signed first input with SIGHASH_NONE', () => {
         txb.addInput(txHash, 0);
-        txb.addOutput(scripts[0], 2000);
+        txb.addOutput(scripts[0], BigInt(2000));
         txb.sign({
           prevOutScriptType: 'p2pkh',
           vin: 0,
           keyPair,
           hashType: Transaction.SIGHASH_NONE,
         });
-        assert.strictEqual(txb.addOutput(scripts[1], 9000), 1);
+        assert.strictEqual(txb.addOutput(scripts[1], BigInt(9000)), 1);
       });
 
       it('add first output after signed first input with SIGHASH_NONE', () => {
@@ -365,19 +365,19 @@ for (const useOldSignArgs of [false, true]) {
           keyPair,
           hashType: Transaction.SIGHASH_NONE,
         });
-        assert.strictEqual(txb.addOutput(scripts[0], 2000), 0);
+        assert.strictEqual(txb.addOutput(scripts[0], BigInt(2000)), 0);
       });
 
       it('add second output after signed first input with SIGHASH_SINGLE', () => {
         txb.addInput(txHash, 0);
-        txb.addOutput(scripts[0], 2000);
+        txb.addOutput(scripts[0], BigInt(2000));
         txb.sign({
           prevOutScriptType: 'p2pkh',
           vin: 0,
           keyPair,
           hashType: Transaction.SIGHASH_SINGLE,
         });
-        assert.strictEqual(txb.addOutput(scripts[1], 9000), 1);
+        assert.strictEqual(txb.addOutput(scripts[1], BigInt(9000)), 1);
       });
 
       it('add first output after signed first input with SIGHASH_SINGLE', () => {
@@ -389,13 +389,13 @@ for (const useOldSignArgs of [false, true]) {
           hashType: Transaction.SIGHASH_SINGLE,
         });
         assert.throws(() => {
-          txb.addOutput(scripts[0], 2000);
+          txb.addOutput(scripts[0], BigInt(2000));
         }, /No, this would invalidate signatures/);
       });
 
       it('throws if SIGHASH_ALL has been used to sign any existing scriptSigs', () => {
         txb.addInput(txHash, 0);
-        txb.addOutput(scripts[0], 2000);
+        txb.addOutput(scripts[0], BigInt(2000));
         txb.sign({
           prevOutScriptType: 'p2pkh',
           vin: 0,
@@ -403,7 +403,7 @@ for (const useOldSignArgs of [false, true]) {
         });
 
         assert.throws(() => {
-          txb.addOutput(scripts[1], 9000);
+          txb.addOutput(scripts[1], BigInt(9000));
         }, /No, this would invalidate signatures/);
       });
     });
@@ -412,7 +412,7 @@ for (const useOldSignArgs of [false, true]) {
       it('throws if if there exist any scriptSigs', () => {
         const txb = new TransactionBuilder();
         txb.addInput(txHash, 0);
-        txb.addOutput(scripts[0], 100);
+        txb.addOutput(scripts[0], BigInt(100));
         txb.sign({
           prevOutScriptType: 'p2pkh',
           vin: 0,
@@ -444,7 +444,7 @@ for (const useOldSignArgs of [false, true]) {
           'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
           1,
         );
-        txb.addOutput('1111111111111111111114oLvT2', 100000);
+        txb.addOutput('1111111111111111111114oLvT2', BigInt(100000));
         txb.sign({
           prevOutScriptType: 'p2pkh',
           vin: 0,
@@ -468,7 +468,7 @@ for (const useOldSignArgs of [false, true]) {
           'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
           1,
         );
-        txb.addOutput('1111111111111111111114oLvT2', 100000);
+        txb.addOutput('1111111111111111111114oLvT2', BigInt(100000));
         txb.sign({
           prevOutScriptType: 'p2pkh',
           vin: 0,
@@ -491,7 +491,7 @@ for (const useOldSignArgs of [false, true]) {
           'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
           1,
         );
-        txb.addOutput('1111111111111111111114oLvT2', 100000);
+        txb.addOutput('1111111111111111111114oLvT2', BigInt(100000));
         txb.setLowR();
         txb.sign({
           prevOutScriptType: 'p2pkh',
@@ -517,7 +517,7 @@ for (const useOldSignArgs of [false, true]) {
           'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
           1,
         );
-        txb.addOutput('1111111111111111111114oLvT2', 100000);
+        txb.addOutput('1111111111111111111114oLvT2', BigInt(100000));
         assert.throws(() => {
           (txb as any).sign();
         }, /TransactionBuilder sign first arg must be TxbSignArg or number/);
@@ -691,7 +691,7 @@ for (const useOldSignArgs of [false, true]) {
         const randomTx = Transaction.fromHex(randomTxData);
         const txb = new TransactionBuilder();
         txb.addInput(randomTx, 0);
-        txb.addOutput(randomAddress, 1000);
+        txb.addOutput(randomAddress, BigInt(1000));
         const tx = txb.buildIncomplete();
         assert(tx);
       });
@@ -707,7 +707,7 @@ for (const useOldSignArgs of [false, true]) {
 
         const txb = new TransactionBuilder(NETWORKS.testnet);
         txb.addInput(inpTx, 0);
-        txb.addOutput('2NAkqp5xffoomp5RLBcakuGpZ12GU4twdz4', 1e8); // arbitrary output
+        txb.addOutput('2NAkqp5xffoomp5RLBcakuGpZ12GU4twdz4', BigInt(1e8)); // arbitrary output
 
         txb.buildIncomplete();
       });
@@ -723,7 +723,7 @@ for (const useOldSignArgs of [false, true]) {
 
         const txb = new TransactionBuilder(NETWORKS.testnet);
         txb.addInput(inpTx, 0);
-        txb.addOutput('2NAkqp5xffoomp5RLBcakuGpZ12GU4twdz4', 1e8); // arbitrary output
+        txb.addOutput('2NAkqp5xffoomp5RLBcakuGpZ12GU4twdz4', BigInt(1e8)); // arbitrary output
 
         txb.buildIncomplete();
       });
@@ -740,7 +740,7 @@ for (const useOldSignArgs of [false, true]) {
 
         const txb = new TransactionBuilder(NETWORKS.testnet);
         txb.addInput(inpTx, 0);
-        txb.addOutput('2NAkqp5xffoomp5RLBcakuGpZ12GU4twdz4', 1e8); // arbitrary output
+        txb.addOutput('2NAkqp5xffoomp5RLBcakuGpZ12GU4twdz4', BigInt(1e8)); // arbitrary output
 
         txb.buildIncomplete();
       });
@@ -854,13 +854,13 @@ for (const useOldSignArgs of [false, true]) {
           0xffffffff,
           scriptPubKey,
         );
-        txb.addOutput(scriptPubKey, 99000);
+        txb.addOutput(scriptPubKey, BigInt(99000));
         txb.sign({
           prevOutScriptType: 'p2sh-p2wsh-p2ms',
           vin: 0,
           keyPair: innerKeyPair,
           redeemScript,
-          witnessValue: 100000,
+          witnessValue: BigInt(100000),
           witnessScript,
         });
 
@@ -915,7 +915,7 @@ for (const useOldSignArgs of [false, true]) {
             '76a914aa4d7985c57e011a8b3dd8e0e5a73aaef41629c588ac',
             'hex',
           ),
-          1000,
+          BigInt(1000),
         );
 
         // now import the Transaction
@@ -967,7 +967,7 @@ for (const useOldSignArgs of [false, true]) {
         );
 
         // sign, as expected
-        txb.addOutput('1Gokm82v6DmtwKEB8AiVhm82hyFSsEvBDK', 15000);
+        txb.addOutput('1Gokm82v6DmtwKEB8AiVhm82hyFSsEvBDK', BigInt(15000));
         txb.sign({
           prevOutScriptType: 'p2pkh',
           vin: 0,
@@ -983,7 +983,7 @@ for (const useOldSignArgs of [false, true]) {
         txb = TransactionBuilder.fromTransaction(
           Transaction.fromHex(incomplete),
         );
-        txb.addOutput('1Gokm82v6DmtwKEB8AiVhm82hyFSsEvBDK', 15000);
+        txb.addOutput('1Gokm82v6DmtwKEB8AiVhm82hyFSsEvBDK', BigInt(15000));
         txb.sign({
           prevOutScriptType: 'p2pkh',
           vin: 0,

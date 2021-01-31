@@ -1,6 +1,6 @@
 const typeforce = require('typeforce');
+import { UINT31_MAX, UINT64_MAX } from './constants';
 
-const UINT31_MAX: number = Math.pow(2, 31) - 1;
 export function UInt31(value: number): boolean {
   return typeforce.UInt32(value) && value <= UINT31_MAX;
 }
@@ -20,9 +20,13 @@ export function Signer(obj: any): boolean {
   );
 }
 
-const SATOSHI_MAX: number = 21 * 1e14;
-export function Satoshi(value: number): boolean {
-  return typeforce.UInt53(value) && value <= SATOSHI_MAX;
+export function Satoshi(value: number | bigint): boolean {
+  if (typeof value === 'number') {
+    return typeforce.UInt53(value);
+  } else if (typeof value === 'bigint') {
+    return value >= BigInt(0) && value <= UINT64_MAX;
+  }
+  return false;
 }
 
 // external dependent types

@@ -1,37 +1,39 @@
+import { UINT53_MAX, UINT64_MAX } from './constants';
 import * as types from './types';
 
 const typeforce = require('typeforce');
 const varuint = require('varuint-bitcoin');
 
 // https://github.com/feross/buffer/blob/master/index.js#L1127
-function verifuint(value: number, max: number): void {
-  if (typeof value !== 'number')
+function verifuint(value: number | bigint, max: number | bigint): void {
+  if (!(typeof value === 'number' || typeof value === 'bigint'))
     throw new Error('cannot write a non-number as a number');
   if (value < 0)
     throw new Error('specified a negative value for writing an unsigned value');
   if (value > max) throw new Error('RangeError: value out of range');
-  if (Math.floor(value) !== value)
+  if (typeof value === 'number' && Math.floor(value) !== value)
     throw new Error('value has a fractional component');
 }
 
-export function readUInt64LE(buffer: Buffer, offset: number): number {
-  const a = buffer.readUInt32LE(offset);
-  let b = buffer.readUInt32LE(offset + 4);
-  b *= 0x100000000;
-
-  verifuint(b + a, 0x001fffffffffffff);
-  return b + a;
+export function readUInt64LE(buffer: Buffer, offset: number): bigint {
+  const value = buffer.readBigUInt64LE(offset);
+  verifuint(value, UINT64_MAX);
+  return value;
 }
 
 export function writeUInt64LE(
   buffer: Buffer,
-  value: number,
+  value: number | bigint,
   offset: number,
 ): number {
-  verifuint(value, 0x001fffffffffffff);
-
-  buffer.writeInt32LE(value & -1, offset);
-  buffer.writeUInt32LE(Math.floor(value / 0x100000000), offset + 4);
+  if (typeof value === 'bigint') {
+    verifuint(value, UINT64_MAX);
+    buffer.writeBigUInt64LE(value, offset);
+  } else {
+    verifuint(value, UINT53_MAX);
+    buffer.writeInt32LE(value & -1, offset);
+    buffer.writeUInt32LE(Math.floor(value / 0x100000000), offset + 4);
+  }
   return offset + 8;
 }
 
@@ -74,7 +76,7 @@ export class BufferWriter {
     this.offset = this.buffer.writeUInt32LE(i, this.offset);
   }
 
-  writeUInt64(i: number): void {
+  writeUInt64(i: number | bigint): void {
     this.offset = writeUInt64LE(this.buffer, i, this.offset);
   }
 
@@ -127,7 +129,7 @@ export class BufferReader {
     return result;
   }
 
-  readUInt64(): number {
+  readUInt64(): bigint {
     const result = readUInt64LE(this.buffer, this.offset);
     this.offset += 8;
     return result;

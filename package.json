@@ -1,7 +1,7 @@
 {
-  "name": "bitcoinjs-lib",
+  "name": "bitcoinjs-lib-bigint",
   "version": "5.1.11-0",
-  "description": "Client-side Bitcoin JavaScript library",
+  "description": "Client-side Bitcoin JavaScript library forked to use BigInt values for compatibility with large supply coins",
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
   "engines": {

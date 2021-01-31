@@ -46,7 +46,7 @@ function isOutput(out: Output): boolean {
 
 export interface Output {
   script: Buffer;
-  value: number;
+  value: bigint;
 }
 
 export interface Input {
@@ -119,7 +119,6 @@ export class Transaction {
     if (_NO_STRICT) return tx;
     if (bufferReader.offset !== buffer.length)
       throw new Error('Transaction has unexpected data');
-
     return tx;
   }
 
@@ -178,14 +177,14 @@ export class Transaction {
     );
   }
 
-  addOutput(scriptPubKey: Buffer, value: number): number {
+  addOutput(scriptPubKey: Buffer, value: bigint): number {
     typeforce(types.tuple(types.Buffer, types.Satoshi), arguments);
 
     // Add the output and return the output's index
     return (
       this.outs.push({
         script: scriptPubKey,
-        value,
+        value: BigInt(value),
       }) - 1
     );
   }
@@ -339,7 +338,7 @@ export class Transaction {
   hashForWitnessV0(
     inIndex: number,
     prevOutScript: Buffer,
-    value: number,
+    value: bigint,
     hashType: number,
   ): Buffer {
     typeforce(
@@ -433,7 +432,8 @@ export class Transaction {
   getHash(forWitness?: boolean): Buffer {
     // wtxid for coinbase is always 32 bytes of 0x00
     if (forWitness && this.isCoinbase()) return Buffer.alloc(32, 0);
-    return bcrypto.hash256(this.__toBuffer(undefined, undefined, forWitness));
+    const buf = this.__toBuffer(undefined, undefined, forWitness);
+    return bcrypto.hash256(buf);
   }
 
   getId(): string {

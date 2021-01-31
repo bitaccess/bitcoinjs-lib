@@ -116,6 +116,9 @@ describe(`Psbt`, () => {
           if (fixtureData) {
             for (const [i, data] of fixtureData.entries()) {
               const txt = upperCaseFirstLetter(inputOrOutput);
+              if (data.witnessUtxo) {
+                data.witnessUtxo.value = BigInt(data.witnessUtxo.value);
+              }
               (psbt as any)[`update${txt}`](i, data);
             }
           }
@@ -488,7 +491,7 @@ describe(`Psbt`, () => {
             '0014d85c2b71d0060b09c9886aeb815e50991dda124d',
             'hex',
           ),
-          value: 2e5,
+          value: BigInt(2e5),
         },
       });
       assert.throws(() => {

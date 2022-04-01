@@ -640,7 +640,7 @@ describe(`Psbt`, () => {
           index: 0,
           witnessUtxo: {
             script: outerScript(innerScript(publicKey)),
-            value: 2e3,
+            value: BigInt(2e3),
           },
           ...(redeemGetter ? { redeemScript: redeemGetter(publicKey) } : {}),
           ...(witnessGetter ? { witnessScript: witnessGetter(publicKey) } : {}),
@@ -739,7 +739,7 @@ describe(`Psbt`, () => {
 
       psbt.updateInput(0, {
         witnessUtxo: {
-          value: 1337,
+          value: BigInt(1337),
           script: payments.p2sh({
             redeem: { output: Buffer.from([0x51]) },
           }).output!,
@@ -754,7 +754,7 @@ describe(`Psbt`, () => {
 
       psbt.updateInput(0, {
         witnessUtxo: {
-          value: 1337,
+          value: BigInt(1337),
           script: payments.p2wsh({
             redeem: { output: Buffer.from([0x51]) },
           }).output!,
@@ -769,7 +769,7 @@ describe(`Psbt`, () => {
 
       psbt.updateInput(0, {
         witnessUtxo: {
-          value: 1337,
+          value: BigInt(1337),
           script: payments.p2sh({
             redeem: payments.p2wsh({
               redeem: { output: Buffer.from([0x51]) },
@@ -1120,7 +1120,7 @@ describe(`Psbt`, () => {
       assert.strictEqual(output.value, internalInput.value);
 
       output.script[0] = 123;
-      output.value = 123;
+      output.value = BigInt(123);
 
       assert.ok(!output.script.equals(internalInput.script));
       assert.notEqual(output.value, internalInput.value);

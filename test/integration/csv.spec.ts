@@ -1,11 +1,15 @@
 import * as assert from 'assert';
 import { PsbtInput } from 'bip174-bigint/src/lib/interfaces';
+import * as ecc from 'tiny-secp256k1';
+import { ECPairFactory, ECPairAPI } from 'ecpair';
 import { before, describe, it } from 'mocha';
 import * as bitcoin from '../..';
 import { regtestUtils } from './_regtest';
 const regtest = regtestUtils.network;
 const bip68 = require('bip68');
 const varuint = require('varuint-bitcoin');
+
+const ECPair: ECPairAPI = ECPairFactory(ecc);
 
 function toOutputScript(address: string): Buffer {
   return bitcoin.address.toOutputScript(address, regtest);
@@ -15,19 +19,19 @@ function idToHash(txid: string): Buffer {
   return Buffer.from(txid, 'hex').reverse();
 }
 
-const alice = bitcoin.ECPair.fromWIF(
+const alice = ECPair.fromWIF(
   'cScfkGjbzzoeewVWmU2hYPUHeVGJRDdFt7WhmrVVGkxpmPP8BHWe',
   regtest,
 );
-const bob = bitcoin.ECPair.fromWIF(
+const bob = ECPair.fromWIF(
   'cMkopUXKWsEzAjfa1zApksGRwjVpJRB3831qM9W4gKZsLwjHXA9x',
   regtest,
 );
-const charles = bitcoin.ECPair.fromWIF(
+const charles = ECPair.fromWIF(
   'cMkopUXKWsEzAjfa1zApksGRwjVpJRB3831qM9W4gKZsMSb4Ubnf',
   regtest,
 );
-const dave = bitcoin.ECPair.fromWIF(
+const dave = ECPair.fromWIF(
   'cMkopUXKWsEzAjfa1zApksGRwjVpJRB3831qM9W4gKZsMwS4pqnx',
   regtest,
 );
@@ -218,7 +222,7 @@ describe('bitcoinjs-lib (transactions w/ CSV)', () => {
       await regtestUtils.broadcast(tx.toHex()).catch(err => {
         assert.throws(() => {
           if (err) throw err;
-        }, /Error: non-BIP68-final \(code 64\)/);
+        }, /Error: non-BIP68-final/);
       });
     },
   );

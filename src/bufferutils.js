@@ -1,9 +1,11 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
+exports.BufferReader = exports.BufferWriter = exports.cloneBuffer = exports.reverseBuffer = exports.writeUInt64LE = exports.readUInt64LE = exports.varuint = void 0;
 const constants_1 = require('./constants');
 const types = require('./types');
-const typeforce = require('typeforce');
+const { typeforce } = types;
 const varuint = require('varuint-bitcoin');
+exports.varuint = varuint;
 // https://github.com/feross/buffer/blob/master/index.js#L1127
 function verifuint(value, max) {
   if (!(typeof value === 'number' || typeof value === 'bigint'))
@@ -60,6 +62,9 @@ class BufferWriter {
     this.offset = offset;
     typeforce(types.tuple(types.Buffer, types.UInt32), [buffer, offset]);
   }
+  static withCapacity(size) {
+    return new BufferWriter(Buffer.alloc(size));
+  }
   writeUInt8(i) {
     this.offset = this.buffer.writeUInt8(i, this.offset);
   }
@@ -89,6 +94,12 @@ class BufferWriter {
   writeVector(vector) {
     this.writeVarInt(vector.length);
     vector.forEach(buf => this.writeVarSlice(buf));
+  }
+  end() {
+    if (this.buffer.length === this.offset) {
+      return this.buffer;
+    }
+    throw new Error(`buffer size ${this.buffer.length}, offset ${this.offset}`);
   }
 }
 exports.BufferWriter = BufferWriter;

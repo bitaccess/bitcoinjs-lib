@@ -1,9 +1,12 @@
 import * as assert from 'assert';
+import * as ecc from 'tiny-secp256k1';
+import { ECPairFactory, ECPairAPI } from 'ecpair';
 import { before, describe, it } from 'mocha';
 import * as bitcoin from '../..';
 import { regtestUtils } from './_regtest';
 const regtest = regtestUtils.network;
 const bip65 = require('bip65');
+const ECPair: ECPairAPI = ECPairFactory(ecc);
 
 function toOutputScript(address: string): Buffer {
   return bitcoin.address.toOutputScript(address, regtest);
@@ -13,11 +16,11 @@ function idToHash(txid: string): Buffer {
   return Buffer.from(txid, 'hex').reverse();
 }
 
-const alice = bitcoin.ECPair.fromWIF(
+const alice = ECPair.fromWIF(
   'cScfkGjbzzoeewVWmU2hYPUHeVGJRDdFt7WhmrVVGkxpmPP8BHWe',
   regtest,
 );
-const bob = bitcoin.ECPair.fromWIF(
+const bob = ECPair.fromWIF(
   'cMkopUXKWsEzAjfa1zApksGRwjVpJRB3831qM9W4gKZsLwjHXA9x',
   regtest,
 );
@@ -249,7 +252,7 @@ describe('bitcoinjs-lib (transactions w/ CLTV)', () => {
       await regtestUtils.broadcast(tx.toHex()).catch(err => {
         assert.throws(() => {
           if (err) throw err;
-        }, /Error: non-final \(code 64\)/);
+        }, /Error: non-final/);
       });
     },
   );

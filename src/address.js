@@ -33,7 +33,7 @@ function _toFutureSegwitAddress(output, network) {
     throw new TypeError('Invalid version for segwit address');
   if (output[1] !== data.length)
     throw new TypeError('Invalid script for segwit address');
-  console.warn(FUTURE_SEGWIT_VERSION_WARNING);
+  // console.warn(FUTURE_SEGWIT_VERSION_WARNING);
   return toBech32(data, version, network.bech32);
 }
 function fromBase58Check(address) {
@@ -135,7 +135,7 @@ function toOutputScript(address, network) {
         decodeBech32.data.length >= FUTURE_SEGWIT_MIN_SIZE &&
         decodeBech32.data.length <= FUTURE_SEGWIT_MAX_SIZE
       ) {
-        console.warn(FUTURE_SEGWIT_VERSION_WARNING);
+        // console.warn(FUTURE_SEGWIT_VERSION_WARNING);
         return bscript.compile([
           decodeBech32.version + FUTURE_SEGWIT_VERSION_DIFF,
           decodeBech32.data,

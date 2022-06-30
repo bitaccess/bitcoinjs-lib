@@ -67,7 +67,7 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
     });
     psbt.addOutput({
       address: '1KRMKfeZcmosxALVYESdPNez1AP1mEtywp',
-      value: BigInt(80000),
+      value: 80000,
     });
     psbt.signInput(0, alice);
     psbt.validateSignaturesOfInput(0, validator);
@@ -117,11 +117,11 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
       .addInput(inputData2) // alice2 unspent
       .addOutput({
         address: 'mwCwTceJvYV27KXBc3NJZys6CjsgsoeHmf',
-        value: BigInt(8e4),
+        value: 8e4,
       }) // the actual "spend"
       .addOutput({
         address: alice2.payment.address, // OR script, which is a Buffer.
-        value: BigInt(1e4),
+        value: 1e4,
       }); // Alice's change
     // (in)(5e4 + 7e4) - (out)(8e4 + 1e4) = (fee)3e4 = 30000, this is the miner fee
 
@@ -186,11 +186,11 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
       .addInput(inputData1)
       .addOutput({
         script: embed.output!,
-        value: BigInt(1000),
+        value: 1000,
       })
       .addOutput({
         address: regtestUtils.RANDOM_ADDRESS,
-        value: BigInt(1e5),
+        value: 1e5,
       })
       .signInput(0, alice1.keys[0]);
 
@@ -221,7 +221,7 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
       .addInput(inputData1)
       .addOutput({
         address: regtestUtils.RANDOM_ADDRESS,
-        value: BigInt(1e4),
+        value: 1e4,
       })
       .signInput(0, multisig.keys[0])
       .signInput(0, multisig.keys[2]);

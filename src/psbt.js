@@ -236,6 +236,9 @@ class Psbt {
           `Requires single object with at least [script or address] and [value]`,
       );
     }
+    if (typeof outputData.value === 'number') {
+      outputData.value = BigInt(outputData.value);
+    }
     checkInputsForPartialSig(this.data.inputs, 'addOutput');
     const { address } = outputData;
     if (typeof address === 'string') {

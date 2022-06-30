@@ -9,7 +9,7 @@ import { describe, it } from 'mocha';
 const ECPair: ECPairAPI = ECPairFactory(ecc);
 const bip32 = BIP32Factory(ecc);
 
-import { networks as NETWORKS, payments, Psbt, Signer, SignerAsync } from '..';
+import { networks as NETWORKS, payments, Psbt, Signer, SignerAsync } from '../';
 
 import * as preFixtures from './fixtures/psbt.json';
 

@@ -13,11 +13,11 @@ const FUTURE_SEGWIT_MIN_SIZE = 2;
 const FUTURE_SEGWIT_MAX_VERSION = 16;
 const FUTURE_SEGWIT_MIN_VERSION = 1;
 const FUTURE_SEGWIT_VERSION_DIFF = 0x50;
-const FUTURE_SEGWIT_VERSION_WARNING =
-  'WARNING: Sending to a future segwit version address can lead to loss of funds. ' +
-  'End users MUST be warned carefully in the GUI and asked if they wish to proceed ' +
-  'with caution. Wallets should verify the segwit version from the output of fromBech32, ' +
-  'then decide when it is safe to use which version of segwit.';
+// const FUTURE_SEGWIT_VERSION_WARNING: string =
+//   'WARNING: Sending to a future segwit version address can lead to loss of funds. ' +
+//   'End users MUST be warned carefully in the GUI and asked if they wish to proceed ' +
+//   'with caution. Wallets should verify the segwit version from the output of fromBech32, ' +
+//   'then decide when it is safe to use which version of segwit.';
 function _toFutureSegwitAddress(output, network) {
   const data = output.slice(2);
   if (

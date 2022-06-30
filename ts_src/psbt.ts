@@ -759,12 +759,12 @@ type PsbtOutputExtended = PsbtOutputExtendedAddress | PsbtOutputExtendedScript;
 
 interface PsbtOutputExtendedAddress extends PsbtOutput {
   address: string;
-  value: number;
+  value: bigint;
 }
 
 interface PsbtOutputExtendedScript extends PsbtOutput {
   script: Buffer;
-  value: number;
+  value: bigint;
 }
 
 interface HDSignerBase {
@@ -865,11 +865,14 @@ class PsbtTransaction implements ITransaction {
   }
 
   addOutput(output: any): void {
+    if (typeof (output as any).value === 'number') {
+      output.value = BigInt(output.value);
+    }
     if (
       (output as any).script === undefined ||
       (output as any).value === undefined ||
       !Buffer.isBuffer((output as any).script) ||
-      typeof (output as any).value !== 'number'
+      typeof (output as any).value !== 'bigint'
     ) {
       throw new Error('Error adding output.');
     }

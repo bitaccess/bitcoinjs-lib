@@ -658,11 +658,14 @@ class PsbtTransaction {
     this.tx.addInput(hash, input.index, input.sequence);
   }
   addOutput(output) {
+    if (typeof output.value === 'number') {
+      output.value = BigInt(output.value);
+    }
     if (
       output.script === undefined ||
       output.value === undefined ||
       !Buffer.isBuffer(output.script) ||
-      typeof output.value !== 'number'
+      typeof output.value !== 'bigint'
     ) {
       throw new Error('Error adding output.');
     }

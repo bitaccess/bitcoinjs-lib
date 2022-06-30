@@ -113,7 +113,7 @@ describe(`Psbt`, () => {
           psbt.addInput(input);
         }
         for (const output of f.outputs) {
-          let outputWithBigIntValue = {
+          const outputWithBigIntValue = {
             script: output.script,
             value: BigInt(output.value),
           };

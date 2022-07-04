@@ -9,7 +9,13 @@ import { describe, it } from 'mocha';
 const ECPair: ECPairAPI = ECPairFactory(ecc);
 const bip32 = BIP32Factory(ecc);
 
-import { networks as NETWORKS, payments, Psbt, Signer, SignerAsync } from '..';
+import {
+  networks as NETWORKS,
+  payments,
+  Psbt,
+  Signer,
+  SignerAsync,
+} from './../';
 
 import * as preFixtures from './fixtures/psbt.json';
 
@@ -107,8 +113,12 @@ describe(`Psbt`, () => {
           psbt.addInput(input);
         }
         for (const output of f.outputs) {
+          const outputWithBigIntValue = {
+            script: output.script,
+            value: BigInt(output.value),
+          };
           const script = Buffer.from(output.script, 'hex');
-          psbt.addOutput({ ...output, script });
+          psbt.addOutput({ ...outputWithBigIntValue, script });
         }
         assert.strictEqual(psbt.toBase64(), f.result);
       });
@@ -652,7 +662,7 @@ describe(`Psbt`, () => {
         })
         .addOutput({
           script: Buffer.from('0014d85c2b71d0060b09c9886aeb815e50991dda124d'),
-          value: 1800,
+          value: BigInt(1800),
         });
       if (finalize) psbt.signInput(0, key).finalizeInput(0);
       const type = psbt.getInputType(0);
@@ -817,7 +827,7 @@ describe(`Psbt`, () => {
             '0014000102030405060708090a0b0c0d0e0f00010203',
             'hex',
           ),
-          value: 2000,
+          value: BigInt(2000),
           bip32Derivation: [
             {
               masterFingerprint: root.fingerprint,
@@ -844,7 +854,7 @@ describe(`Psbt`, () => {
           script: payments.p2sh({
             redeem: { output: Buffer.from([0x51]) },
           }).output!,
-          value: 1337,
+          value: BigInt(1337),
         });
 
       assert.throws(() => {
@@ -994,7 +1004,7 @@ describe(`Psbt`, () => {
     });
     psbt.addOutput({
       address: '1KRMKfeZcmosxALVYESdPNez1AP1mEtywp',
-      value: 80000,
+      value: BigInt(80000),
     });
     psbt.signInput(0, alice);
     assert.throws(() => {
@@ -1120,7 +1130,7 @@ describe(`Psbt`, () => {
     it('.txOutputs is exposed as a readonly clone', () => {
       const psbt = new Psbt();
       const address = '1LukeQU5jwebXbMLDVydeH4vFSobRV9rkj';
-      const value = 100000;
+      const value = BigInt(100000);
       psbt.addOutput({ address, value });
 
       const output = psbt.txOutputs[0];

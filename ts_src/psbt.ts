@@ -288,6 +288,9 @@ export class Psbt {
           `Requires single object with at least [script or address] and [value]`,
       );
     }
+    if (typeof outputData.value === 'number') {
+      outputData.value = BigInt(outputData.value);
+    }
     checkInputsForPartialSig(this.data.inputs, 'addOutput');
     const { address } = outputData as any;
     if (typeof address === 'string') {
@@ -759,12 +762,12 @@ type PsbtOutputExtended = PsbtOutputExtendedAddress | PsbtOutputExtendedScript;
 
 interface PsbtOutputExtendedAddress extends PsbtOutput {
   address: string;
-  value: number;
+  value: number | bigint;
 }
 
 interface PsbtOutputExtendedScript extends PsbtOutput {
   script: Buffer;
-  value: number;
+  value: number | bigint;
 }
 
 interface HDSignerBase {
@@ -865,11 +868,14 @@ class PsbtTransaction implements ITransaction {
   }
 
   addOutput(output: any): void {
+    if (typeof (output as any).value === 'number') {
+      output.value = BigInt(output.value);
+    }
     if (
       (output as any).script === undefined ||
       (output as any).value === undefined ||
       !Buffer.isBuffer((output as any).script) ||
-      typeof (output as any).value !== 'number'
+      typeof (output as any).value !== 'bigint'
     ) {
       throw new Error('Error adding output.');
     }

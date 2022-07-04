@@ -3,7 +3,7 @@ import BIP32Factory from 'bip32';
 import * as ecc from 'tiny-secp256k1';
 import { ECPairFactory, ECPairAPI } from 'ecpair';
 import { describe, it } from 'mocha';
-import * as bitcoin from '../..';
+import * as bitcoin from './../..';
 import { regtestUtils } from './_regtest';
 const rng = require('randombytes');
 const regtest = regtestUtils.network;
@@ -268,11 +268,11 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
     const keyPair = p2sh.keys[0];
     const outputData = {
       script: p2sh.payment.output, // sending to myself for fun
-      value: 2e4,
+      value: BigInt(2e4),
     };
     const outputData2 = {
       script: p2sh.payment.output, // sending to myself for fun
-      value: 7e4,
+      value: BigInt(7e4),
     };
 
     const tx = new bitcoin.Psbt()
@@ -302,11 +302,11 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
     const keyPair = p2sh.keys[0];
     const outputData = {
       script: p2sh.payment.output,
-      value: 2e4,
+      value: BigInt(2e4),
     };
     const outputData2 = {
       script: p2sh.payment.output,
-      value: 7e4,
+      value: BigInt(7e4),
     };
     const tx = new bitcoin.Psbt()
       .addInputs([inputData, inputData2])
@@ -337,7 +337,7 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
       .addInput(inputData)
       .addOutput({
         address: regtestUtils.RANDOM_ADDRESS,
-        value: 2e4,
+        value: BigInt(2e4),
       })
       .signInput(0, p2wpkh.keys[0]);
 
@@ -371,7 +371,7 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
       .addInput(inputData)
       .addOutput({
         address: regtestUtils.RANDOM_ADDRESS,
-        value: 2e4,
+        value: BigInt(2e4),
       })
       .signInput(0, p2wpkh.keys[0]);
     psbt.finalizeAllInputs();
@@ -405,7 +405,7 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
       .addInput(inputData)
       .addOutput({
         address: regtestUtils.RANDOM_ADDRESS,
-        value: 2e4,
+        value: BigInt(2e4),
       })
       .signInput(0, p2wsh.keys[0]);
 
@@ -434,7 +434,7 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
       .addInput(inputData)
       .addOutput({
         address: regtestUtils.RANDOM_ADDRESS,
-        value: 2e4,
+        value: BigInt(2e4),
       })
       .signInput(0, p2wsh.keys[0]);
     psbt.finalizeAllInputs();
@@ -477,7 +477,7 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
         .addInput(inputData)
         .addOutput({
           address: regtestUtils.RANDOM_ADDRESS,
-          value: 2e4,
+          value: BigInt(2e4),
         })
         .signInput(0, p2sh.keys[0])
         .signInput(0, p2sh.keys[2])
@@ -524,7 +524,7 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
         .addInput(inputData)
         .addOutput({
           address: regtestUtils.RANDOM_ADDRESS,
-          value: 2e4,
+          value: BigInt(2e4),
         })
         .signInput(0, p2sh.keys[0])
         .signInput(0, p2sh.keys[2])
@@ -556,7 +556,7 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
         .addInput(inputData)
         .addOutput({
           address: regtestUtils.RANDOM_ADDRESS,
-          value: 2e4,
+          value: BigInt(2e4),
         })
         .signInput(0, p2sh.keys[0]);
       psbt.finalizeAllInputs();
@@ -610,7 +610,7 @@ describe('bitcoinjs-lib (transactions with psbt)', () => {
       // .updateInput(0, updateData) // if you didn't merge the bip32Derivation with inputData
       .addOutput({
         address: regtestUtils.RANDOM_ADDRESS,
-        value: 2e4,
+        value: BigInt(2e4),
       })
       .signInputHD(0, hdRoot); // must sign with root!!!
 
@@ -684,6 +684,7 @@ function createPayment(_type: string, myKeys?: any[], network?: any): any {
 
 function getWitnessUtxo(out: any): any {
   delete out.address;
+  out.value = BigInt(out.value);
   out.script = Buffer.from(out.script, 'hex');
   return out;
 }

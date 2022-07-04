@@ -107,11 +107,11 @@ interface PsbtInputExtended extends PsbtInput, TransactionInput {
 declare type PsbtOutputExtended = PsbtOutputExtendedAddress | PsbtOutputExtendedScript;
 interface PsbtOutputExtendedAddress extends PsbtOutput {
     address: string;
-    value: number;
+    value: number | bigint;
 }
 interface PsbtOutputExtendedScript extends PsbtOutput {
     script: Buffer;
-    value: number;
+    value: number | bigint;
 }
 interface HDSignerBase {
     /**

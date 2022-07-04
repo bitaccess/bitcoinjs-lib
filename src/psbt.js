@@ -236,6 +236,9 @@ class Psbt {
           `Requires single object with at least [script or address] and [value]`,
       );
     }
+    if (typeof outputData.value === 'number') {
+      outputData.value = BigInt(outputData.value);
+    }
     checkInputsForPartialSig(this.data.inputs, 'addOutput');
     const { address } = outputData;
     if (typeof address === 'string') {
@@ -658,11 +661,14 @@ class PsbtTransaction {
     this.tx.addInput(hash, input.index, input.sequence);
   }
   addOutput(output) {
+    if (typeof output.value === 'number') {
+      output.value = BigInt(output.value);
+    }
     if (
       output.script === undefined ||
       output.value === undefined ||
       !Buffer.isBuffer(output.script) ||
-      typeof output.value !== 'number'
+      typeof output.value !== 'bigint'
     ) {
       throw new Error('Error adding output.');
     }

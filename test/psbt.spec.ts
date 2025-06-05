@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import BIP32Factory from 'bip32';
-import * as ecc from 'tiny-secp256k1';
+import * as ecc from '@bitcoinerlab/secp256k1';
 import * as crypto from 'crypto';
 import { ECPairFactory, ECPairAPI } from 'ecpair';
 

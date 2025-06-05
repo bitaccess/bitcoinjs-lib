@@ -1,4 +1,4 @@
-import * as ecc from 'tiny-secp256k1';
+import * as ecc from '@bitcoinerlab/secp256k1';
 import { ECPairFactory, ECPairAPI } from 'ecpair';
 
 import { describe, it } from 'mocha';

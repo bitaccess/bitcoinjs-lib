@@ -5,7 +5,7 @@
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=18.0.0"
   },
   "keywords": [
     "bitcoinjs",
@@ -50,7 +50,7 @@
   ],
   "dependencies": {
     "bech32": "^2.0.0",
-    "bip174-bigint": "github:bitaccess/bip174#bigint",
+    "bip174-bigint": "github:bitaccess/bip174#bigint_v2",
     "bip32": "^3.0.1",
     "bip66": "^1.1.0",
     "bitcoin-ops": "^1.4.0",
